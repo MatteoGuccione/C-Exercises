@@ -22,15 +22,4 @@ void aiv_list_add(aiv_list_t* list, void* item);
 
 bool aiv_list_is_empty(aiv_list_t* list);
 
-void aiv_list_remove(aiv_list_t* list, aiv_list_node_t* node);
-
-int aiv_list_get_size(aiv_list_t* list);
-
-void* aiv_list_get_item_at(aiv_list_t* list, size_t index, void** out_item);
-
-
-void aiv_list_set_item_at(aiv_list_t* list, size_t index, void* item);
-
-void aiv_list_remove_at(aiv_list_t* list, size_t index);
-
 #endif //AIV_LIST
