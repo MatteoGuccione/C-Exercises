@@ -22,4 +22,14 @@ aiv_dict_t aiv_dict_new_with_params(size_t hashmap_size, size_t (*hash_func)(voi
 
 void aiv_dict_put(aiv_dict_t*, void* key, size_t key_size, void* value);
 
+void* aiv_dict_get(aiv_dict_t* dict, void* key, size_t key_size);
+
+int aiv_dict_contains_key(aiv_dict_t* dict, void* key, size_t key_size);
+
+void aiv_dict_destroy(aiv_dict_t* dict);
+
+void aiv_dict_remove(aiv_dict_t* dict, void* key, size_t key_size);
+
+int aiv_dict_get_size(aiv_dict_t* dict);
+
 #endif //AIV_DICT

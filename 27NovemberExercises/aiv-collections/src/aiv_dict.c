@@ -71,3 +71,95 @@ void aiv_dict_put(aiv_dict_t* dict, void* key, size_t key_size, void* value) {
     }
 
 }
+
+int aiv_dict_contains_key(aiv_dict_t* dict, void* key, size_t key_size) {
+    size_t hash =  dict->hash_func(key, key_size);
+    size_t hash_index = hash % dict->hashmap_size;
+
+    aiv_dict_node_t* node = dict->hashmap[hash_index];
+    while(node) {
+        //if (node->key == key) {
+        if (node->key_size == key_size && !memcmp(node->key, key, key_size)) {
+            return 1;
+        }
+        node = node->next;
+    }
+
+    return 0;
+}
+
+void* aiv_dict_get(aiv_dict_t* dict, void* key, size_t key_size) {
+    
+    if(!aiv_dict_contains_key(dict, key, key_size)) {
+        // Key not found
+        return NULL;
+    }
+
+    size_t hash =  dict->hash_func(key, key_size);
+    size_t hash_index = hash % dict->hashmap_size;
+
+    aiv_dict_node_t* node = dict->hashmap[hash_index];
+    while(node) {
+        //if (node->key == key) {
+        if (node->key_size == key_size && !memcmp(node->key, key, key_size)) {
+            return node->value;
+        }
+        node = node->next;
+    }
+
+    return NULL;
+}
+
+void aiv_dict_destroy(aiv_dict_t* dict) {
+    for (size_t i = 0; i < dict->hashmap_size; i++) {
+        aiv_dict_node_t* node = dict->hashmap[i];
+        while(node) {
+            aiv_dict_node_t* next = node->next;
+            free(node->key);
+            free(node);
+            node = next;
+        }
+    }
+    free(dict->hashmap);
+}
+
+void aiv_dict_remove(aiv_dict_t* dict, void* key, size_t key_size) {
+
+    if(!aiv_dict_contains_key(dict, key, key_size)) {
+        // Key not found
+        return;
+    }
+
+    size_t hash =  dict->hash_func(key, key_size);
+    size_t hash_index = hash % dict->hashmap_size;
+
+    aiv_dict_node_t* node = dict->hashmap[hash_index];
+    aiv_dict_node_t* prev = NULL;
+    while(node) {
+        //if (node->key == key) {
+        if (node->key_size == key_size && !memcmp(node->key, key, key_size)) {
+            if (prev) {
+                prev->next = node->next;
+            } else {
+                dict->hashmap[hash_index] = node->next;
+            }
+            free(node->key);
+            free(node);
+            return;
+        }
+        prev = node;
+        node = node->next;
+    }
+}
+
+int aiv_dict_get_size(aiv_dict_t* dict) {
+    int size = 0;
+    for (size_t i = 0; i < dict->hashmap_size; i++) {
+        aiv_dict_node_t* node = dict->hashmap[i];
+        while(node) {
+            size++;
+            node = node->next;
+        }
+    }
+    return size;
+}
