@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "heapapi.h": "c"
+        "heapapi.h": "c",
+        "stdio.h": "c"
     }
 }

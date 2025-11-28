@@ -1,46 +1,59 @@
-#include <windows.h>
-#include <heapapi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-static size_t rows = 3;
-static size_t columns = 3;
+static int rows = 3;
+static int columns = 3;
 
-void setNumberInMatrix(int *matrix, int row, int column, int number)
+int** CreateMatrix()
 {
-    matrix[(columns* column)+row] = number;
+    int **matrix = calloc(rows,sizeof(int*));
+    for(int i = 0; i < rows; i++) {
+        matrix[i] = calloc(columns,sizeof(int));
+    }
+    return matrix;
 }
 
-int getNumberInMatrix(int *matrix, int row, int column)
+void setNumberInMatrix(int **matrix, int row, int column, int number)
 {
-    printf("The number is %d \n", matrix[(columns* column)+row]);
-    return matrix[(columns* column)+row];
+    matrix[row][column] = number;
 }
+
+int getNumberInMatrix(int **matrix, int row, int column)
+{
+    return matrix[row][column];
+}
+
+void freeMatrix(int *matrix)
+{
+    for(int i = 0; i < rows; i++) {
+        free(&matrix[i]);
+    }
+    free(matrix);
+}
+
 
 
 int main() 
 {
 
-    HANDLE heap = GetProcessHeap();
-    SIZE_T totalBytes = rows * columns * sizeof(int);
+    int** matrix = CreateMatrix();
 
-    int *matrix = (int*)HeapAlloc(heap, HEAP_ZERO_MEMORY, totalBytes);
-    if (!matrix) {
-        printf("Failed allocation\n");
-        return 1;
-    }
-    int i = 0;
-    i = getNumberInMatrix(matrix,2,2);
-    i++;
-    setNumberInMatrix(matrix,2,2,i);
-    i = getNumberInMatrix(matrix,2,2);
-    
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++) {
-            printf("%d ", matrix[i*columns + j]);
+    int i2 = 2;
+    setNumberInMatrix(matrix,2,2,i2);
+
+    int result;
+    result = getNumberInMatrix(matrix,2,2);
+    printf("%d \n", result);
+
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < columns; j++) {
+            printf("%d ", getNumberInMatrix(matrix,i,j));
         }
         printf("\n");
     }
+    
 
-    HeapFree(heap, 0, matrix);
+    printf("Over");
+
     return 0;
 }
